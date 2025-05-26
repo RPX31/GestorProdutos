@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,7 +29,7 @@ public class Produto {
     private String descricao;
 
     @NotNull(message = "A quantidade é obrigatória")
-    @Size(min = 0, message = "não aceita quantidades negativas")
+    @Min(value = 0, message = "não aceita quantidades negativas")
     private Integer quantidade;
 
     @Id
@@ -63,4 +64,12 @@ public class Produto {
     public Long getId() {return id;}
 
     public void setId(Long id) {this.id = id;}
+
+    public Categoria getCategoria() { return categoria; }
+
+    public void setCategoria(Categoria categoria) { this.categoria = categoria;}
+    
+    public Marca getMarca() { return marca;}
+    
+    public void setMarca(Marca marca) {this.marca = marca;}
 }

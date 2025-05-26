@@ -17,7 +17,7 @@ public class Marca {
     
     @NotNull(message = "O nome da Marca é obrigatorio!")
     @Size(min = 3 , max = 50, message = "o nome da marca deve ter entre 3 e 50 caracteres")
-    private String marca;
+    private String nome;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
@@ -25,13 +25,13 @@ public class Marca {
     @OneToMany(mappedBy = "marca") 
     private List<Produto> produtos;
 
-    public String getMarca() {return marca;}
+    public String getNome() {return nome;}
 
-    public void setMarca(String marca) {this.marca = marca;}
+    public void setNome(String nome) {this.nome = nome;}
 
-    public Long getid() {return id;}
+    public Long getId() {return id;}
 
-    public void setid(Long id) {this.id = id;}
+    public void setId(Long id) {this.id = id;}
 
     public List<Produto> getProdutos(){return produtos;} 
 

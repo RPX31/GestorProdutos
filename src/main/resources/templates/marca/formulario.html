@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Nova Marca</title></head>
+<body>
+<h2>Nova Marca</h2>
+
+<form th:action="@{/marcas}" th:object="${marca}" method="post">
+    <label>Nome:</label><br/>
+    <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/>
+    <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div><br/>
+
+    <button type="submit">Salvar Marca</button>
+</form>
+
+<br/>
+<a href="/marcas">Voltar para lista de marcas</a>
+</body>
+</html>
