@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Produto</title>
+</head>
+<body>
+<h1>Cadastro de Produto</h1>
+
+<form th:action="@{/formulario}" th:object="${produto}" method="post">
+
+    <label>Nome:</label><br/>
+    <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/><br/>
+
+    <label>Preço:</label><br/>
+    <input type="number" th:field="*{preco}" step="0.01" min="0.01" required/><br/><br/>
+
+    <label>Descrição:</label><br/>
+    <textarea th:field="*{descricao}" required minlength="3" maxlength="200"></textarea><br/><br/>
+
+    <label>Quantidade:</label><br/>
+    <input type="number" th:field="*{quantidade}" min="0" required/><br/><br/>
+
+    <!-- Campo Categoria -->
+    <label>Categoria:</label><br/>
+    <select th:field="*{categoria}" required>
+        <option value="" disabled selected>Selecione uma categoria</option>
+        <option th:each="cat : ${categorias}" 
+                th:value="${cat.id}" 
+                th:text="${cat.nome}">
+        </option>
+    </select><br/><br/>
+
+    <!-- Campo Marca -->
+    <label>Marca:</label><br/>
+    <select th:field="*{marca}" required>
+        <option value="" disabled selected>Selecione uma marca</option>
+        <option th:each="marca : ${marcas}" 
+                th:value="${marca.id}" 
+                th:text="${marca.nome}">
+        </option>
+    </select><br/><br/>
+
+    <button type="submit">Salvar Produto</button>
+</form>
+
+</body>
+</html>
