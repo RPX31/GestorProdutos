@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerenciador de Estoque</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+  <link rel="stylesheet" th:href="@{/css/modal.css}">
+</head>
+<body>
+
+  <nav>
+  <a href="#" onclick="location.reload()">Recarregar Página</a>
+
+  </nav>
+
+
+
+<div class="Container">
+
+  <!-- Botões para abrir os modais -->
+  <div class="botao-container">
+  <button id="abrirModalProduto" style="background-color: #28a745;">Cadastrar Produto</button>
+  <button id="abrirModalMarca" style="background-color: #17a2b8;">Cadastrar Marca</button>
+  <button id="abrirModalCategoria" style="background-color: #ffc107; color: black;">Cadastrar Categoria</button>
+</div>
+
+<div class="carousel-container">
+  <button class="carousel-arrow left-arrow">&#8592;</button>
+
+  <div class="carousel-slide active">
+    <h1>Lista de Produtos</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Preço</th>
+          <th>Descricão</th>
+          <th>Quantidade</th>
+          <th>Marca</th>
+          <th>Categoria</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="produto : ${produtos}">
+          <td th:text="${produto.id}"></td>
+          <td th:text="${produto.nome}"></td>
+          <td th:text="${produto.preco}"></td>
+          <td th:text="${produto.descricao}"></td>
+          <td th:text="${produto.quantidade}"></td>
+          <td th:text="${produto.marca.nome}"></td>
+          <td th:text="${produto.categoria.nome}"></td>
+          <td>
+            <a th:href="@{'/produtos/editar/' + ${produto.id}}">Editar</a> |
+            <a th:href="@{'/produtos/deletar/' + ${produto.id}}">Excluir</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="carousel-slide">
+    <h1>Lista de Marcas</h1>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Nome</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="marca : ${marcas}">
+          <td th:text="${marca.id}"></td>
+          <td th:text="${marca.nome}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="carousel-slide">
+    <h1>Lista de Categorias</h1>
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Nome</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="cat : ${categorias}">
+          <td th:text="${cat.id}"></td>
+          <td th:text="${cat.nome}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <button class="carousel-arrow right-arrow">&#8594;</button>
+</div>
+
+
+<!-- Modal Marca -->
+<div class="modal-overlay" id="modalMarca">
+  <div class="modal">
+    <h2>Nova Marca</h2>
+    <form th:action="@{/marcas}" method="post">
+      <label>Nome:</label><br>
+      <input type="text" name="nome"  required minlength="3" maxlength="50"><br><br>
+      <button type="submit">Salvar</button>
+      <button type="button" id="fecharModalMarca">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Categoria -->
+<div class="modal-overlay" id="modalCategoria">
+  <div class="modal">
+    <h2>Nova Categoria</h2>
+    <form th:action="@{/categorias}" th:object="${categoria}" method="post">
+      <label>Nome:</label><br/>
+      <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/>
+      <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div><br/>
+      <button type="submit">Salvar Categoria</button>
+      <button type="button" id="fecharModalCategoria">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Produto -->
+<div class="modal-overlay" id="modalProduto">
+  <div class="modal">
+    <h2>Novo Produto</h2>
+    <form th:action="@{/formulario}" th:object="${produto}" method="post">
+
+      <label>Nome:</label><br/>
+      <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/><br/>
+
+      <label>Preço:</label><br/>
+      <input type="number" th:field="*{preco}" step="0.01" min="0.01" required/><br/><br/>
+
+      <label>Descrição:</label><br/>
+      <textarea th:field="*{descricao}" required minlength="3" maxlength="200"></textarea><br/><br/>
+
+      <label>Quantidade:</label><br/>
+      <input type="number" th:field="*{quantidade}" min="0" required/><br/><br/>
+
+      <label>Categoria:</label><br/>
+      <select th:field="*{categoria}" required>
+        <option value="" disabled selected>Selecione uma categoria</option>
+        <option th:each="cat : ${categorias}" 
+                th:value="${cat.id}" 
+                th:text="${cat.nome}">
+        </option>
+      </select><br/><br/>
+
+      <label>Marca:</label><br/>
+      <select th:field="*{marca}" required>
+        <option value="" disabled selected>Selecione uma marca</option>
+        <option th:each="marca : ${marcas}" 
+                th:value="${marca.id}" 
+                th:text="${marca.nome}">
+        </option>
+      </select><br/><br/>
+
+      <button type="submit">Salvar Produto</button>
+      <button type="button" id="fecharModalProduto">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>Desenvolvido por <strong>Rodrigo Pereira</strong></p>
+  <a href="https://github.com/RPX31" target="_blank">GitHub</a> |
+  <a href="https://www.linkedin.com/in/rodrigodevv/" target="_blank">LinkedIn</a>
+</footer>
+
+
+<script th:src="@{/Script/modal.js}"></script>
+</body>
+</html>

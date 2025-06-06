@@ -17,23 +17,17 @@ public class CategoriaController {
     private CategoriaRepository categoriaRepository;
 
     @GetMapping
-    public String listar(Model model) {
+    public String listaCategorias(Model model) {
         model.addAttribute("categorias", categoriaRepository.findAll());
+        model.addAttribute("categoria", new Categoria());
         return "categoria/lista";
     }
-
-    @GetMapping("/nova")
-    public String novaCategoria(Model model) {
-        model.addAttribute("categoria", new Categoria());
-        return "categoria/formulario";
-    }
-
     @PostMapping
     public String salvar(@Valid @ModelAttribute Categoria categoria, BindingResult result) {
         if (result.hasErrors()) {
-            return "categoria/formulario";
+            return "/produto";
         }
         categoriaRepository.save(categoria);
-        return "redirect:/categorias";
+        return "redirect:/inicio";
     }
 }

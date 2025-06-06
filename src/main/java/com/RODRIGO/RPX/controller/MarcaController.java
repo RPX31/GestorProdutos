@@ -22,18 +22,12 @@ public class MarcaController {
         return "marca/lista";
     }
 
-    @GetMapping("/nova")
-    public String novaMarca(Model model) {
-        model.addAttribute("marca", new Marca());
-        return "marca/formulario";
-    }
-
     @PostMapping
     public String salvar(@Valid @ModelAttribute Marca marca, BindingResult result) {
         if (result.hasErrors()) {
-            return "marca/formulario";
+            return "produto";
         }
         marcaRepository.save(marca);
-        return "redirect:/marcas";
+        return "redirect:/inicio";
     }
 }
