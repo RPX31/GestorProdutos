@@ -10,11 +10,9 @@
   justify-content: center;
   z-index: 1000;
 }
-
 .modal-overlay.active {
   display: flex;
 }
-
 .modal {
   background-color: var(--cor-branca);
   padding: 30px;
@@ -24,22 +22,18 @@
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
   text-align: left;
 }
-
 .modal h2 {
   margin-top: 0;
   color: var(--cor-escura);
   text-align: center;
 }
-
 .modal form {
   display: flex;
   flex-direction: column;
 }
-
 .modal label {
   margin: 10px 0 5px;
 }
-
 .modal input,
 .modal select,
 .modal textarea {
@@ -48,7 +42,6 @@
   border: 1px solid var(--cor-borda);
   font-size: 14px;
 }
-
 .modal button {
   margin-top: 15px;
   padding: 10px;
@@ -57,26 +50,21 @@
   color: var(--cor-branca);
   font-weight: bold;
 }
-
 .modal button[type="submit"] {
   background-color: var(--cor-primaria);
 }
-
 .modal button[type="button"] {
   background-color: #6c757d;
 }
-
 .modal button:hover {
   opacity: 0.9;
 }
-
 .botao-container {
   margin-top: 30px;
   display: flex;
   justify-content: center;
   gap: 10px;
 }
-
 .botao-container button {
   padding: 12px 18px;
   border: none;
