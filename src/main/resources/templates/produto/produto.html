@@ -52,8 +52,8 @@
           <td th:text="${produto.marca.nome}"></td>
           <td th:text="${produto.categoria.nome}"></td>
           <td>
-            <a th:href="@{'/produtos/editar/' + ${produto.id}}">Editar</a> |
-            <a th:href="@{'/produtos/deletar/' + ${produto.id}}">Excluir</a>
+            <a th:href="@{'/editar/editar/' + ${produto.id}}">Editar</a> |
+            <a th:href="@{'/deletar/' + ${produto.id}} ">Excluir</a>
           </td>
         </tr>
       </tbody>
@@ -62,14 +62,25 @@
 
   <div class="carousel-slide">
     <h1>Lista de Marcas</h1>
+
+    
     <table>
       <thead>
-        <tr><th>ID</th><th>Nome</th></tr>
+        <tr><th>ID</th><th>Nome</th><th>Ações</th>
+</tr>
       </thead>
       <tbody>
         <tr th:each="marca : ${marcas}">
           <td th:text="${marca.id}"></td>
           <td th:text="${marca.nome}"></td>
+          <td>
+            <a th:href="@{'/editar/editar/' + ${marca.id}}">Editar</a> |
+            <form th:action="@{'/marcas/deletar/' + ${marca.id}}" method="post" onsubmit="return confirm('Tem certeza?')">
+            <input type="hidden" name="_method" value="delete"/>
+            <button type="submit">Excluir</button>
+</form>
+
+          </td>
         </tr>
       </tbody>
     </table>
@@ -79,12 +90,18 @@
     <h1>Lista de Categorias</h1>
     <table>
       <thead>
-        <tr><th>ID</th><th>Nome</th></tr>
+        <tr><th>ID</th><th>Nome</th>
+        <th>Ações</th></tr>
       </thead>
       <tbody>
         <tr th:each="cat : ${categorias}">
           <td th:text="${cat.id}"></td>
           <td th:text="${cat.nome}"></td>
+          <td>
+           <form th:action="@{'/categorias/deletar/' + ${categoria.id}}" method="post" onsubmit="return confirm('Tem certeza?')">
+            <input type="hidden" name="_method" value="delete"/>
+            <button type="submit">Excluir</button>
+            </td>
         </tr>
       </tbody>
     </table>
@@ -125,7 +142,7 @@
 <div class="modal-overlay" id="modalProduto">
   <div class="modal">
     <h2>Novo Produto</h2>
-    <form th:action="@{/formulario}" th:object="${produto}" method="post">
+    <form th:action="@{/inicios}" th:object="${produto}" method="post">
 
       <label>Nome:</label><br/>
       <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/><br/>
