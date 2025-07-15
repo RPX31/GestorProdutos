@@ -7,12 +7,12 @@ Sistema completo de gerenciamento de produtos com categorias e marcas, construí
 ## 🚀 Tecnologias Utilizadas
 
 ### 🔧 Backend
-- **Java 24**
+- **Java 21**
 - **Spring Boot 3.x**
 - **Spring Data JPA**
 - **Spring Web**
 - **Lombook**
-- **S**
+- **Docker**
 - **Bean Validation (Jakarta Validation)**
 
 ### 🎨 Frontend
