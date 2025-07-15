@@ -6,4 +6,6 @@ import com.RODRIGO.RPX.entity.Categoria;
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
          List<Categoria> findByNomeContainingIgnoreCase(String nome);
+         boolean existsByNomeIgnoreCase(String nome);
+
 }

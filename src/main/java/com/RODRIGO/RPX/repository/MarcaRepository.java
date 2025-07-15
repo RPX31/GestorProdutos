@@ -6,4 +6,6 @@ import com.RODRIGO.RPX.entity.Marca;
 @Repository
 public interface MarcaRepository extends JpaRepository <Marca, Long>{
      List<Marca> findByNomeContainingIgnoreCase(String nome);
+     boolean existsByNomeIgnoreCase(String nome);
+
 }

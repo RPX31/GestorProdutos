@@ -7,26 +7,18 @@
   <link rel="stylesheet" th:href="@{/css/modal.css}">
 </head>
 <body>
-
   <nav>
   <a href="#" onclick="location.reload()">Recarregar Página</a>
-
   </nav>
-
-
-
 <div class="Container">
-
   <!-- Botões para abrir os modais -->
   <div class="botao-container">
-  <button id="abrirModalProduto" style="background-color: #28a745;">Cadastrar Produto</button>
-  <button id="abrirModalMarca" style="background-color: #17a2b8;">Cadastrar Marca</button>
-  <button id="abrirModalCategoria" style="background-color: #ffc107; color: black;">Cadastrar Categoria</button>
+  <button id="abrirModalProduto" class="btn-produto">Cadastrar Produto</button>
+  <button id="abrirModalMarca" class="btn-marca">Cadastrar Marca</button>
+  <button id="abrirModalCategoria" class="btn-categoria">Cadastrar Categoria</button>
 </div>
-
 <div class="carousel-container">
   <button class="carousel-arrow left-arrow">&#8592;</button>
-
   <div class="carousel-slide active">
     <h1>Lista de Produtos</h1>
     <table>
@@ -52,18 +44,15 @@
           <td th:text="${produto.marca.nome}"></td>
           <td th:text="${produto.categoria.nome}"></td>
           <td>
-            <a th:href="@{'/editar/editar/' + ${produto.id}}">Editar</a> |
-            <a th:href="@{'/deletar/' + ${produto.id}} ">Excluir</a>
+            <button type="button"th:attr="onclick=|abrirModalEditarProduto(${produto.id}, '${produto.nome}', ${produto.preco}, '${produto.descricao}', ${produto.quantidade}, ${produto.categoria.id}, ${produto.marca.id})|" class="btn-link-button" >Editar</button>
+            <a th:href="@{'/deletar/' + ${produto.id}} "  class="btn-link-button" >Excluir</a>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-
   <div class="carousel-slide">
-    <h1>Lista de Marcas</h1>
-
-    
+    <h1>Lista de Marcas</h1>  
     <table>
       <thead>
         <tr><th>ID</th><th>Nome</th><th>Ações</th>
@@ -74,18 +63,16 @@
           <td th:text="${marca.id}"></td>
           <td th:text="${marca.nome}"></td>
           <td>
-            <a th:href="@{'/editar/editar/' + ${marca.id}}">Editar</a> |
-            <form th:action="@{'/marcas/deletar/' + ${marca.id}}" method="post" onsubmit="return confirm('Tem certeza?')">
-            <input type="hidden" name="_method" value="delete"/>
-            <button type="submit">Excluir</button>
+            <a th:href="@{'/marcas/marcas/deletar/' + ${marca.id}} " class="btn-link-button" >Excluir</a>
+            <div th:if="${mensagemMarca}" class="alert alert-success" th:text="${mensagemMarca}"></div>
+            <div th:if="${erroMarca}" class="alert alert-danger" th:text="${erroMarca}"></div>
+          </td>
 </form>
-
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-
   <div class="carousel-slide">
     <h1>Lista de Categorias</h1>
     <table>
@@ -98,37 +85,61 @@
           <td th:text="${cat.id}"></td>
           <td th:text="${cat.nome}"></td>
           <td>
-           <form th:action="@{'/categorias/deletar/' + ${categoria.id}}" method="post" onsubmit="return confirm('Tem certeza?')">
-            <input type="hidden" name="_method" value="delete"/>
-            <button type="submit">Excluir</button>
+              <a th:href="@{'/categorias/categorias/deletar/' + ${cat.id}} " class="btn-link-button" >Excluir</a>
+              <div th:if="${mensagemCategoria}" class="alert alert-success" th:text="${mensagemCategoria}"></div>
+              <div th:if="${erroCategoria}" class="alert alert-danger" th:text="${erroCategoria}"></div>
             </td>
         </tr>
       </tbody>
     </table>
   </div>
-
   <button class="carousel-arrow right-arrow">&#8594;</button>
 </div>
-
-
+<!-- Modal Editar Produto -->
+<div class="modal-overlay" id="modalEditarProduto">
+  <div class="modal">
+    <h2>Editar Produto</h2>
+    <form id="formEditarProduto" th:action="@{/produtos/editar}" method="post">
+      <input type="hidden" name="id" id="editarProdutoId" />
+      <label>Nome:</label><br/>
+      <input type="text" name="nome" id="editarNome" required minlength="3" maxlength="50"/><br/><br/>
+      <label>Preço:</label><br/>
+      <input type="number" name="preco" id="editarPreco" step="0.01" min="0.01" required/><br/><br/>
+      <label>Descrição:</label><br/>
+      <textarea name="descricao" id="editarDescricao" required minlength="3" maxlength="200"></textarea><br/><br/>
+      <label>Quantidade:</label><br/>
+      <input type="number" name="quantidade" id="editarQuantidade" min="0" required/><br/><br/>
+      <label>Categoria:</label><br/>
+      <select name="categoria" id="editarCategoria" required>
+        <option th:each="cat : ${categorias}" th:value="${cat.id}" th:text="${cat.nome}"></option>
+      </select><br/><br/>
+      <label>Marca:</label><br/>
+      <select name="marca" id="editarMarca" required>
+        <option th:each="marca : ${marcas}" th:value="${marca.id}" th:text="${marca.nome}"></option>
+      </select><br/><br/>
+      <button type="submit">Atualizar Produto</button>
+      <button type="button" onclick="fecharModalEditarProduto()">Cancelar</button>
+    </form>
+  </div>
+</div>
 <!-- Modal Marca -->
 <div class="modal-overlay" id="modalMarca">
   <div class="modal">
     <h2>Nova Marca</h2>
-    <form th:action="@{/marcas}" method="post">
+    <form th:action="@{/marcas/salvar}" th:object="${marca}" method="post">
       <label>Nome:</label><br>
-      <input type="text" name="nome"  required minlength="3" maxlength="50"><br><br>
-      <button type="submit">Salvar</button>
+      <input type="text" th:field="*{nome}"  required minlength="3" maxlength="50"><br><br>
+      <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div><br/>
+      <button type="submit" >Salvar</button>
       <button type="button" id="fecharModalMarca">Cancelar</button>
     </form>
-  </div>
+  </div> 
 </div>
-
 <!-- Modal Categoria -->
 <div class="modal-overlay" id="modalCategoria">
   <div class="modal">
     <h2>Nova Categoria</h2>
-    <form th:action="@{/categorias}" th:object="${categoria}" method="post">
+    <form th:action="@{/categorias/salvar}" th:object="${categoria}" method="post">
       <label>Nome:</label><br/>
       <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/>
       <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div><br/>
@@ -137,25 +148,19 @@
     </form>
   </div>
 </div>
-
 <!-- Modal Produto -->
 <div class="modal-overlay" id="modalProduto">
   <div class="modal">
     <h2>Novo Produto</h2>
-    <form th:action="@{/inicios}" th:object="${produto}" method="post">
-
+    <form th:action="@{/produtos/salvar}" th:object="${produto}" method="post">
       <label>Nome:</label><br/>
       <input type="text" th:field="*{nome}" required minlength="3" maxlength="50"/><br/><br/>
-
       <label>Preço:</label><br/>
       <input type="number" th:field="*{preco}" step="0.01" min="0.01" required/><br/><br/>
-
       <label>Descrição:</label><br/>
       <textarea th:field="*{descricao}" required minlength="3" maxlength="200"></textarea><br/><br/>
-
       <label>Quantidade:</label><br/>
       <input type="number" th:field="*{quantidade}" min="0" required/><br/><br/>
-
       <label>Categoria:</label><br/>
       <select th:field="*{categoria}" required>
         <option value="" disabled selected>Selecione uma categoria</option>
@@ -164,7 +169,6 @@
                 th:text="${cat.nome}">
         </option>
       </select><br/><br/>
-
       <label>Marca:</label><br/>
       <select th:field="*{marca}" required>
         <option value="" disabled selected>Selecione uma marca</option>
@@ -173,20 +177,16 @@
                 th:text="${marca.nome}">
         </option>
       </select><br/><br/>
-
       <button type="submit">Salvar Produto</button>
       <button type="button" id="fecharModalProduto">Cancelar</button>
     </form>
   </div>
 </div>
-
 <footer>
-  <p>Desenvolvido por <strong>Rodrigo Pereira</strong></p>
+  <p>Desenvolvido por <strong>Rodrigo Oliveira || RPX31</strong></p>
   <a href="https://github.com/RPX31" target="_blank">GitHub</a> |
   <a href="https://www.linkedin.com/in/rodrigodevv/" target="_blank">LinkedIn</a>
 </footer>
-
-
 <script th:src="@{/Script/modal.js}"></script>
 </body>
 </html>

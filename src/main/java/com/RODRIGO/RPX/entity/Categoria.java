@@ -9,7 +9,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "tb_categoria")
 public class Categoria {
     @Id
@@ -21,10 +27,4 @@ public class Categoria {
     private String nome;
     @OneToMany(mappedBy = "categoria")
     private List<Produto> produtos; 
-    public Long getId() {return id;}
-    public void setId(Long id) { this.id = id;}
-    public String getNome(){return nome;}
-    public void setNome( String nome){this.nome = nome;} 
-    public List<Produto> getProdutos(){return produtos;} 
-    public void setProdutos(List<Produto> produtos){this.produtos = produtos;}
 }

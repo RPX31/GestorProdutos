@@ -9,7 +9,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "tb_marca")
 public class Marca {
     @NotNull(message = "O nome da Marca é obrigatorio!")
@@ -21,10 +27,4 @@ public class Marca {
     private Long id;
     @OneToMany(mappedBy = "marca") 
     private List<Produto> produtos;
-    public String getNome() {return nome;}
-    public void setNome(String nome) {this.nome = nome;}
-    public Long getId() {return id;}
-    public void setId(Long id) {this.id = id;}
-    public List<Produto> getProdutos(){return produtos;} 
-    public void setProdutos(List<Produto> produtos){this.produtos = produtos;}
 }
