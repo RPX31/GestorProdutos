@@ -11,6 +11,8 @@ Sistema completo de gerenciamento de produtos com categorias e marcas, construí
 - **Spring Boot 3.x**
 - **Spring Data JPA**
 - **Spring Web**
+- **Lombook**
+- **S**
 - **Bean Validation (Jakarta Validation)**
 
 ### 🎨 Frontend
@@ -20,7 +22,8 @@ Sistema completo de gerenciamento de produtos com categorias e marcas, construí
 - **Thymeleaf** (template engine para renderização server-side)
 
 ### 🗃️ Banco de Dados
-- **H2 Database** (em memória, com console web)
+- **H2 Database** (em memória, com console web) na construção da api
+- **Postegress** no deploy da aplicação
 
 ---
 
@@ -69,16 +72,6 @@ As validações são aplicadas diretamente nas classes de entidade com **anotaç
 💻 Como Executar
 Clone o repositório:git clone https://github.com/RPX31/GestorProdutos.git
 
-🌐 Endpoints e Console
-Sistema Web: http://localhost:8080
-
-Console H2: http://localhost:8080/h2-console
-
-Credenciais padrão:
-
-JDBC URL: jdbc:h2:mem:testdb
-
-Usuário: sa
-
-Senha: (em branco)
+Acesso em produção
+link: https://gestorprodutos.onrender.com
 
