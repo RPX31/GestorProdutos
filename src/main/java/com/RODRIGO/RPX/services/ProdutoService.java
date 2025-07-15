@@ -11,10 +11,8 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
     public Produto buscarPorId(Long id) {
-        return produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-    }
+        return produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado")); }
     public void deletar(Long id) {
-        produtoRepository.deleteById(id);
-    }
+        produtoRepository.deleteById(id);}
 }
 

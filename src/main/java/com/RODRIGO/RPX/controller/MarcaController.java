@@ -1,24 +1,37 @@
 package com.RODRIGO.RPX.controller;
+import com.RODRIGO.RPX.entity.Categoria;
 import com.RODRIGO.RPX.entity.Marca;
+import com.RODRIGO.RPX.entity.Produto;
+import com.RODRIGO.RPX.repository.CategoriaRepository;
 import com.RODRIGO.RPX.repository.MarcaRepository;
+import com.RODRIGO.RPX.repository.ProdutoRepository;
 import com.RODRIGO.RPX.services.MarcaService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
+@AllArgsConstructor
 @RequestMapping("/marcas")
 public class MarcaController {
-    @Autowired
+
+    private CategoriaRepository categoriaRepository;
+    private ProdutoRepository produtoRepository;
     private MarcaRepository marcaRepository;
-    @Autowired
     private MarcaService marcaService;
+
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("marcas", marcaRepository.findAll());
+            model.addAttribute("produtos", produtoRepository.findAll());
+            model.addAttribute("categorias", categoriaRepository.findAll());
+            model.addAttribute("marcas", marcaRepository.findAll());
+            model.addAttribute("produto", new Produto()); 
+            model.addAttribute("categoria", new Categoria());
+            model.addAttribute("marca", new Marca()); 
         return "produto/produto";
     }
     @GetMapping("/buscar")
@@ -27,17 +40,27 @@ public class MarcaController {
         model.addAttribute("marcas", marcas);
         return "produto/produto";
     }
-    @DeleteMapping("/deletar/{id}")
-    public String deletarMarca(@PathVariable("id") Long id){
-        marcaService.deletar(id);
-        return "redirect:/inicio";
-    }
-    @PostMapping
-    public String salvar(@Valid @ModelAttribute Marca marca, BindingResult result) {
-        if (result.hasErrors()) {
-        return "produto";
+    @GetMapping("/marcas/deletar/{id}")
+    public String deletarMarca(@PathVariable("id") Long id, RedirectAttributes redirectAttributes){
+        try {
+            marcaService.deletar(id);
+            redirectAttributes.addFlashAttribute("mensagemMarca", "Marca deletada com sucesso.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erroMarca", e.getMessage());
         }
-        marcaRepository.save(marca);
         return "redirect:/inicio";
     }
+    @PostMapping("/salvar")
+    public String salvar(@Valid @ModelAttribute Marca marca , RedirectAttributes redirectAttributes)  {
+
+    boolean existe = marcaRepository.existsByNomeIgnoreCase(marca.getNome());
+    
+        if (existe) {
+            redirectAttributes.addFlashAttribute("erroMarca", "Já existe uma Marca com esse nome.");
+            return "redirect:/inicio";
+        }
+
+            marcaRepository.save(marca);
+            return "redirect:/inicio";
+        }
 }

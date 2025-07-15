@@ -30,6 +30,22 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+function abrirModalEditarProduto(id, nome, preco, descricao, quantidade, categoriaId, marcaId) {
+    document.getElementById('editarProdutoId').value = id;
+    document.getElementById('editarNome').value = nome;
+    document.getElementById('editarPreco').value = preco;
+    document.getElementById('editarDescricao').value = descricao;
+    document.getElementById('editarQuantidade').value = quantidade;
+    document.getElementById('editarCategoria').value = categoriaId;
+    document.getElementById('editarMarca').value = marcaId;
+
+    document.getElementById('modalEditarProduto').style.display = 'flex';
+  }
+
+  function fecharModalEditarProduto() {
+    document.getElementById('modalEditarProduto').style.display = 'none';
+  };
+
 // Carrossel de tabelas
 document.addEventListener('DOMContentLoaded', function () {
   const slides = document.querySelectorAll('.carousel-slide');
@@ -57,4 +73,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   updateSlides(); // Inicializa
 });
+function deletarMarca(id) {
+  if (confirm('Deseja realmente excluir esta marca?')) {
+    fetch('/marcas/deletar/' + id, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Marca excluída com sucesso.');
+        location.reload();
+      } else {
+        alert('Erro ao excluir marca.');
+      }
+    });
+  }
+}
+
 
