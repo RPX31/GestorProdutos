@@ -161,3 +161,39 @@ button.btn-link-button {
   opacity: 0.8;
   color: var(--cor-preto);
 }
+@media (max-width: 768px) {
+  nav a {
+    display: block;
+    margin: 10px 0;
+    font-size: 16px;
+  }
+
+  table {
+    width: 95%;
+    font-size: 14px;
+  }
+
+  th, td {
+    padding: 8px;
+  }
+
+  .Container {
+    margin-top: 10vh;
+    padding: 10px;
+  }
+
+  .carousel-arrow {
+    font-size: 22px;
+  }
+
+  footer {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+  @media (max-width: 768px) {
+  footer {
+    position: static;
+    padding-bottom: 60px; /* Se quiser deixar espaço no final */
+  }
+}
+}
