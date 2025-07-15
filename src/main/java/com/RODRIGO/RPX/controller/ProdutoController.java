@@ -75,4 +75,9 @@ public class ProdutoController {
         produtoRepository.save(produto); // Como o ID já vem preenchido, ele faz update
         return "redirect:/inicio";
     }
+    @GetMapping("/")
+public String redirecionarParaInicio() {
+    return "redirect:/inicio";
+}
+
 }
