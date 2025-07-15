@@ -48,7 +48,7 @@ public class MarcaController {
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("erroMarca", e.getMessage());
         }
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
     @PostMapping("/salvar")
     public String salvar(@Valid @ModelAttribute Marca marca , RedirectAttributes redirectAttributes)  {
@@ -57,10 +57,10 @@ public class MarcaController {
     
         if (existe) {
             redirectAttributes.addFlashAttribute("erroMarca", "Já existe uma Marca com esse nome.");
-            return "redirect:/inicio";
+            return "redirect:/Gerenciador/de/produtos";
         }
 
             marcaRepository.save(marca);
-            return "redirect:/inicio";
+            return "redirect:/Gerenciador/de/produtos";
         }
 }

@@ -27,7 +27,7 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     // Página principal com lista e formulários
-    @GetMapping("/inicio")
+    @GetMapping("/Gerenciador/de/produtos")
     public String listaProdutos(Model model) {
         model.addAttribute("produtos", produtoRepository.findAll());
         model.addAttribute("categorias", categoriaRepository.findAll());
@@ -52,14 +52,14 @@ public class ProdutoController {
         }
 
         produtoRepository.save(produto);
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
 
     // Deletar produto
     @GetMapping("/deletar/{id}")
     public String deletarProduto(@PathVariable("id") Long id) {
         produtoService.deletar(id);
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
 
     // Editar produto (do modal)
@@ -73,11 +73,11 @@ public class ProdutoController {
         }
 
         produtoRepository.save(produto); // Como o ID já vem preenchido, ele faz update
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
     @GetMapping("/")
 public String redirecionarParaInicio() {
-    return "redirect:/inicio";
+    return "redirect:/Gerenciador/de/produtos";
 }
 
 }
