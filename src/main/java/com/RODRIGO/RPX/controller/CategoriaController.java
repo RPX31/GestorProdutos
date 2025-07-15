@@ -41,7 +41,7 @@ public class CategoriaController {
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("erroCategoria", e.getMessage());
         }
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
     @GetMapping("/buscar")
     public String buscarPorNome(@RequestParam("nome") String nome, Model model){
@@ -54,9 +54,9 @@ public class CategoriaController {
     
     if (existe) {
         redirectAttributes.addFlashAttribute("erroCategoria", "Já existe uma categoria com esse nome.");
-        return "redirect:/inicio";
+        return "redirect:/Gerenciador/de/produtos";
     }
     categoriaRepository.save(categoria);
-    return "redirect:/inicio";
+    return "redirect:/Gerenciador/de/produtos";
 }
 }
