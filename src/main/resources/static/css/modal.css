@@ -72,3 +72,30 @@
   color: var(--cor-branca);
   font-size: 14px;
 }
+@media (max-width: 600px) {
+  .modal {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .modal input,
+  .modal select,
+  .modal textarea {
+    font-size: 13px;
+  }
+
+  .botao-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .botao-container button {
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  footer {
+    position: static;
+    padding-bottom: 60px; /* Se quiser deixar espaço no final */
+  }
+}
