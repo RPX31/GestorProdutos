@@ -1,83 +1,117 @@
 package com.RODRIGO.RPX.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-import com.RODRIGO.RPX.entity.Categoria;
-import com.RODRIGO.RPX.entity.Marca;
 import com.RODRIGO.RPX.entity.Produto;
-import com.RODRIGO.RPX.repository.CategoriaRepository;
-import com.RODRIGO.RPX.repository.MarcaRepository;
-import com.RODRIGO.RPX.repository.ProdutoRepository;
+import com.RODRIGO.RPX.services.ProdutoPageService;
 import com.RODRIGO.RPX.services.ProdutoService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/")
 public class ProdutoController {
 
-    private ProdutoRepository produtoRepository;
-    private CategoriaRepository categoriaRepository;
-    private MarcaRepository marcaRepository;
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+    private final ProdutoPageService produtoPageService;
 
-    // Página principal com lista e formulários
     @GetMapping("/Gerenciador/de/produtos")
     public String listaProdutos(Model model) {
-        model.addAttribute("produtos", produtoRepository.findAll());
-        model.addAttribute("categorias", categoriaRepository.findAll());
-        model.addAttribute("marcas", marcaRepository.findAll());
 
-        // Objetos vazios para os formulários
-        model.addAttribute("produto", new Produto());
-        model.addAttribute("categoria", new Categoria());
-        model.addAttribute("marca", new Marca());
+        carregarPagina(model);
 
         return "produto/produto";
     }
 
-    // Cadastro de novo produto
     @PostMapping("/produtos/salvar")
-    public String salvarProduto(@Valid @ModelAttribute Produto produto, BindingResult result, Model model) {
+    public String salvarProduto(
+            @Valid @ModelAttribute("produto") Produto produto,
+            BindingResult result,
+            Model model) {
+
         if (result.hasErrors()) {
-            model.addAttribute("produtos", produtoRepository.findAll());
-            model.addAttribute("categorias", categoriaRepository.findAll());
-            model.addAttribute("marcas", marcaRepository.findAll());
+
+            carregarPagina(model);
+
             return "produto/produto";
         }
 
-        produtoRepository.save(produto);
+        produtoService.salvar(produto);
+
         return "redirect:/Gerenciador/de/produtos";
     }
 
-    // Deletar produto
     @GetMapping("/deletar/{id}")
-    public String deletarProduto(@PathVariable("id") Long id) {
+    public String deletarProduto(
+            @PathVariable Long id) {
+
         produtoService.deletar(id);
+
         return "redirect:/Gerenciador/de/produtos";
     }
 
-    // Editar produto (do modal)
     @PostMapping("/produtos/editar")
-    public String editarProduto(@ModelAttribute Produto produto, BindingResult result, Model model) {
+    public String editarProduto(
+            @Valid @ModelAttribute("produto") Produto produto,
+            BindingResult result,
+            Model model) {
+
         if (result.hasErrors()) {
-            model.addAttribute("produtos", produtoRepository.findAll());
-            model.addAttribute("categorias", categoriaRepository.findAll());
-            model.addAttribute("marcas", marcaRepository.findAll());
+
+            carregarPagina(model);
+
             return "produto/produto";
         }
 
-        produtoRepository.save(produto); // Como o ID já vem preenchido, ele faz update
+        produtoService.atualizar(
+                produto.getId(),
+                produto
+        );
+
         return "redirect:/Gerenciador/de/produtos";
     }
-    @GetMapping("/")
-public String redirecionarParaInicio() {
-    return "redirect:/Gerenciador/de/produtos";
-}
 
+    @GetMapping("/")
+    public String redirecionarParaInicio() {
+
+        return "redirect:/Gerenciador/de/produtos";
+    }
+
+    private void carregarPagina(Model model) {
+
+        model.addAttribute(
+                "produtos",
+                produtoPageService.listarProdutos()
+        );
+
+        model.addAttribute(
+                "categorias",
+                produtoPageService.listarCategorias()
+        );
+
+        model.addAttribute(
+                "marcas",
+                produtoPageService.listarMarcas()
+        );
+
+        model.addAttribute(
+                "produto",
+                produtoPageService.novoProduto()
+        );
+
+        model.addAttribute(
+                "categoria",
+                produtoPageService.novaCategoria()
+        );
+
+        model.addAttribute(
+                "marca",
+                produtoPageService.novaMarca()
+        );
+    }
 }

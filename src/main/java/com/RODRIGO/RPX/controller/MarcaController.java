@@ -1,66 +1,120 @@
 package com.RODRIGO.RPX.controller;
-import com.RODRIGO.RPX.entity.Categoria;
-import com.RODRIGO.RPX.entity.Marca;
-import com.RODRIGO.RPX.entity.Produto;
-import com.RODRIGO.RPX.repository.CategoriaRepository;
-import com.RODRIGO.RPX.repository.MarcaRepository;
-import com.RODRIGO.RPX.repository.ProdutoRepository;
-import com.RODRIGO.RPX.services.MarcaService;
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 
 import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.RODRIGO.RPX.entity.Marca;
+import com.RODRIGO.RPX.services.MarcaService;
+import com.RODRIGO.RPX.services.ProdutoPageService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/marcas")
 public class MarcaController {
 
-    private CategoriaRepository categoriaRepository;
-    private ProdutoRepository produtoRepository;
-    private MarcaRepository marcaRepository;
-    private MarcaService marcaService;
+    private final MarcaService marcaService;
+    private final ProdutoPageService produtoPageService;
 
     @GetMapping
     public String listar(Model model) {
-            model.addAttribute("produtos", produtoRepository.findAll());
-            model.addAttribute("categorias", categoriaRepository.findAll());
-            model.addAttribute("marcas", marcaRepository.findAll());
-            model.addAttribute("produto", new Produto()); 
-            model.addAttribute("categoria", new Categoria());
-            model.addAttribute("marca", new Marca()); 
+
+        carregarPagina(model);
+
         return "produto/produto";
     }
+
     @GetMapping("/buscar")
-    public String buscarPorNome(@RequestParam("nome") String nome, Model model) {
-        List<Marca> marcas = marcaRepository.findByNomeContainingIgnoreCase(nome);
-        model.addAttribute("marcas", marcas);
+    public String buscarPorNome(
+            @RequestParam("nome") String nome,
+            Model model) {
+
+        model.addAttribute(
+                "marcas",
+                marcaService.buscarPorNome(nome)
+        );
+
+        model.addAttribute(
+                "produtos",
+                produtoPageService.listarProdutos()
+        );
+
+        model.addAttribute(
+                "categorias",
+                produtoPageService.listarCategorias()
+        );
+
+        model.addAttribute(
+                "produto",
+                produtoPageService.novoProduto()
+        );
+
+        model.addAttribute(
+                "categoria",
+                produtoPageService.novaCategoria()
+        );
+
+        model.addAttribute(
+                "marca",
+                new Marca()
+        );
+
         return "produto/produto";
     }
-    @GetMapping("/marcas/deletar/{id}")
-    public String deletarMarca(@PathVariable("id") Long id, RedirectAttributes redirectAttributes){
-        try {
-            marcaService.deletar(id);
-            redirectAttributes.addFlashAttribute("mensagemMarca", "Marca deletada com sucesso.");
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("erroMarca", e.getMessage());
-        }
+
+    @GetMapping("/deletar/{id}")
+    public String deletarMarca(
+            @PathVariable Long id) {
+
+        marcaService.deletar(id);
+
         return "redirect:/Gerenciador/de/produtos";
     }
+
     @PostMapping("/salvar")
-    public String salvar(@Valid @ModelAttribute Marca marca , RedirectAttributes redirectAttributes)  {
+    public String salvar(
+            @Valid @ModelAttribute("marca") Marca marca) {
 
-    boolean existe = marcaRepository.existsByNomeIgnoreCase(marca.getNome());
-    
-        if (existe) {
-            redirectAttributes.addFlashAttribute("erroMarca", "Já existe uma Marca com esse nome.");
-            return "redirect:/Gerenciador/de/produtos";
-        }
+        marcaService.salvar(marca);
 
-            marcaRepository.save(marca);
-            return "redirect:/Gerenciador/de/produtos";
-        }
+        return "redirect:/Gerenciador/de/produtos";
+    }
+
+    private void carregarPagina(Model model) {
+
+        model.addAttribute(
+                "produtos",
+                produtoPageService.listarProdutos()
+        );
+
+        model.addAttribute(
+                "categorias",
+                produtoPageService.listarCategorias()
+        );
+
+        model.addAttribute(
+                "marcas",
+                marcaService.listarTodos()
+        );
+
+        model.addAttribute(
+                "produto",
+                produtoPageService.novoProduto()
+        );
+
+        model.addAttribute(
+                "categoria",
+                produtoPageService.novaCategoria()
+        );
+
+        model.addAttribute(
+                "marca",
+                new Marca()
+        );
+    }
 }
