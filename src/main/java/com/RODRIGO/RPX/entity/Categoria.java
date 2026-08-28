@@ -25,6 +25,5 @@ public class Categoria {
     @Size(min = 3, max = 50 , message = "O nome da Categoria deve ter entre 3 e 50 caracteres")
     @Column(unique = true)
     private String nome;
-    @OneToMany(mappedBy = "categoria")
-    private List<Produto> produtos; 
+
 }

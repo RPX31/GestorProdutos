@@ -2,119 +2,77 @@ package com.RODRIGO.RPX.controller;
 
 import java.util.List;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.RODRIGO.RPX.entity.Marca;
 import com.RODRIGO.RPX.services.MarcaService;
-import com.RODRIGO.RPX.services.ProdutoPageService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/marcas")
 public class MarcaController {
 
     private final MarcaService marcaService;
-    private final ProdutoPageService produtoPageService;
 
     @GetMapping
-    public String listar(Model model) {
+    public ResponseEntity<List<Marca>> listar() {
 
-        carregarPagina(model);
+        List<Marca> marcas = marcaService.listarTodos();
 
-        return "produto/produto";
+        return ResponseEntity.ok(marcas);
     }
 
     @GetMapping("/buscar")
-    public String buscarPorNome(
-            @RequestParam("nome") String nome,
-            Model model) {
+    public ResponseEntity<List<Marca>> buscarPorNome(
+            @RequestParam String nome) {
 
-        model.addAttribute(
-                "marcas",
-                marcaService.buscarPorNome(nome)
-        );
+        List<Marca> marcas = marcaService.buscarPorNome(nome);
 
-        model.addAttribute(
-                "produtos",
-                produtoPageService.listarProdutos()
-        );
-
-        model.addAttribute(
-                "categorias",
-                produtoPageService.listarCategorias()
-        );
-
-        model.addAttribute(
-                "produto",
-                produtoPageService.novoProduto()
-        );
-
-        model.addAttribute(
-                "categoria",
-                produtoPageService.novaCategoria()
-        );
-
-        model.addAttribute(
-                "marca",
-                new Marca()
-        );
-
-        return "produto/produto";
+        return ResponseEntity.ok(marcas);
     }
 
-    @GetMapping("/deletar/{id}")
-    public String deletarMarca(
+    @GetMapping("/{id}")
+    public ResponseEntity<Marca> buscarPorId(
+            @PathVariable Long id) {
+
+        Marca marca = marcaService.buscarPorId(id);
+
+        return ResponseEntity.ok(marca);
+    }
+
+    @PostMapping
+    public ResponseEntity<Marca> salvar(
+            @Valid @RequestBody Marca marca) {
+
+        Marca marcaSalva = marcaService.salvar(marca);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(marcaSalva);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Marca> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody Marca marca) {
+
+        Marca marcaAtualizada =
+                marcaService.atualizar(id, marca);
+
+        return ResponseEntity.ok(marcaAtualizada);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarMarca(
             @PathVariable Long id) {
 
         marcaService.deletar(id);
 
-        return "redirect:/Gerenciador/de/produtos";
-    }
-
-    @PostMapping("/salvar")
-    public String salvar(
-            @Valid @ModelAttribute("marca") Marca marca) {
-
-        marcaService.salvar(marca);
-
-        return "redirect:/Gerenciador/de/produtos";
-    }
-
-    private void carregarPagina(Model model) {
-
-        model.addAttribute(
-                "produtos",
-                produtoPageService.listarProdutos()
-        );
-
-        model.addAttribute(
-                "categorias",
-                produtoPageService.listarCategorias()
-        );
-
-        model.addAttribute(
-                "marcas",
-                marcaService.listarTodos()
-        );
-
-        model.addAttribute(
-                "produto",
-                produtoPageService.novoProduto()
-        );
-
-        model.addAttribute(
-                "categoria",
-                produtoPageService.novaCategoria()
-        );
-
-        model.addAttribute(
-                "marca",
-                new Marca()
-        );
+        return ResponseEntity.noContent().build();
     }
 }

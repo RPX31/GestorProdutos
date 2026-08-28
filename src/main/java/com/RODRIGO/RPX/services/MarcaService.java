@@ -2,6 +2,7 @@ package com.RODRIGO.RPX.services;
 
 import java.util.List;
 
+import com.RODRIGO.RPX.infrastructure.restclient.ProdutoRestClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class MarcaService {
 
     private final MarcaRepository marcaRepository;
+    private final ProdutoRestClient produtoRestClient;
 
     @Transactional(readOnly = true)
     public List<Marca> listarTodos() {
@@ -43,9 +45,24 @@ public class MarcaService {
     @Transactional
     public Marca salvar(Marca marca) {
 
-        validarNomeDuplicado(marca);
+        validarNomeDuplicado(marca.getNome(), null);
 
         return marcaRepository.save(marca);
+    }
+
+    @Transactional
+    public Marca atualizar(Long id, Marca marcaAtualizada) {
+
+        Marca marcaExistente = buscarPorId(id);
+
+        validarNomeDuplicado(
+                marcaAtualizada.getNome(),
+                id
+        );
+
+        marcaExistente.setNome(marcaAtualizada.getNome());
+
+        return marcaRepository.save(marcaExistente);
     }
 
     @Transactional
@@ -53,7 +70,7 @@ public class MarcaService {
 
         Marca marca = buscarPorId(id);
 
-        if (!marca.getProdutos().isEmpty()) {
+        if (produtoRestClient.existeProdutoPorMarca(id)) {
 
             throw new ResourceInUseException(
                     "Não é possível excluir a marca '" +
@@ -65,16 +82,18 @@ public class MarcaService {
         marcaRepository.delete(marca);
     }
 
-    private void validarNomeDuplicado(Marca marca) {
+    private void validarNomeDuplicado(String nome, Long id) {
 
-        boolean existe = marcaRepository
-                .existsByNomeIgnoreCase(marca.getNome());
+        marcaRepository
+                .findByNomeIgnoreCase(nome)
+                .ifPresent(marca -> {
 
-        if (existe) {
+                    if (id == null || !marca.getId().equals(id)) {
 
-            throw new BusinessException(
-                    "Já existe uma marca com esse nome."
-            );
-        }
+                        throw new BusinessException(
+                                "Já existe uma marca com esse nome."
+                        );
+                    }
+                });
     }
 }
