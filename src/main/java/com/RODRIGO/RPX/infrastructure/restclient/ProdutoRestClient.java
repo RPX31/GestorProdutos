@@ -3,7 +3,7 @@ package com.RODRIGO.RPX.infrastructure.restclient;
 import java.util.Arrays;
 import java.util.List;
 
-import com.RODRIGO.RPX.Dto.ProdutoDTO;
+import com.RODRIGO.RPX.dto.ProdutoDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 

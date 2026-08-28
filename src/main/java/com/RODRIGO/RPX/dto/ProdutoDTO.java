@@ -1,4 +1,4 @@
-package com.RODRIGO.RPX.Dto;
+package com.RODRIGO.RPX.dto;
 
 public record ProdutoDTO(
         Long id,
