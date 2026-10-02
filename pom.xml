@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>com.RPX</groupId>
-    <artifactId>RPX</artifactId>
+    <artifactId>Categoria-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <name>RPX SOLUTIONS</name>

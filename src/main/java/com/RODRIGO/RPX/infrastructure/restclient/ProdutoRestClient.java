@@ -1,13 +1,13 @@
 package com.RODRIGO.RPX.infrastructure.restclient;
 
-import java.util.Arrays;
-import java.util.List;
+import com.RODRIGO.RPX.dto.request.ProdutoRequestDTO;
+import com.RODRIGO.RPX.dto.response.ProdutoResponseDTO;
 
-import com.RODRIGO.RPX.dto.ProdutoDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class ProdutoRestClient {
@@ -20,37 +20,39 @@ public class ProdutoRestClient {
                 .build();
     }
 
-    public List<ProdutoDTO> listarTodos() {
+    public List<ProdutoResponseDTO> listarTodos() {
 
-        ProdutoDTO[] produtos = restClient
+        ProdutoResponseDTO[] produtos = restClient
                 .get()
                 .uri("/produtos")
                 .retrieve()
-                .body(ProdutoDTO[].class);
+                .body(ProdutoResponseDTO[].class);
 
         return produtos != null
                 ? Arrays.asList(produtos)
                 : List.of();
     }
 
-    public ProdutoDTO salvar(ProdutoDTO produto) {
+    public ProdutoResponseDTO salvar(ProdutoRequestDTO request) {
 
         return restClient
                 .post()
                 .uri("/produtos")
-                .body(produto)
+                .body(request)
                 .retrieve()
-                .body(ProdutoDTO.class);
+                .body(ProdutoResponseDTO.class);
     }
 
-    public ProdutoDTO atualizar(Long id, ProdutoDTO produto) {
+    public ProdutoResponseDTO atualizar(
+            Long id,
+            ProdutoRequestDTO request) {
 
         return restClient
                 .put()
                 .uri("/produtos/{id}", id)
-                .body(produto)
+                .body(request)
                 .retrieve()
-                .body(ProdutoDTO.class);
+                .body(ProdutoResponseDTO.class);
     }
 
     public void deletar(Long id) {
@@ -61,19 +63,27 @@ public class ProdutoRestClient {
                 .retrieve()
                 .toBodilessEntity();
     }
+
     public boolean existeProdutoPorCategoria(Long categoriaId) {
 
         return restClient
                 .get()
-                .uri("/produtos/categoria/{categoriaId}/existe", categoriaId)
+                .uri(
+                        "/produtos/categoria/{categoriaId}/existe",
+                        categoriaId
+                )
                 .retrieve()
                 .body(Boolean.class);
     }
+
     public boolean existeProdutoPorMarca(Long marcaId) {
 
         return restClient
                 .get()
-                .uri("/produtos/marca/{marcaId}/existe", marcaId)
+                .uri(
+                        "/produtos/marca/{marcaId}/existe",
+                        marcaId
+                )
                 .retrieve()
                 .body(Boolean.class);
     }

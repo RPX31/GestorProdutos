@@ -2,17 +2,19 @@ package com.RODRIGO.RPX.services;
 
 import java.util.List;
 
-import com.RODRIGO.RPX.infrastructure.restclient.ProdutoRestClient;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.RODRIGO.RPX.dto.request.CategoriaRequestDTO;
+import com.RODRIGO.RPX.dto.response.CategoriaResponseDTO;
 import com.RODRIGO.RPX.entity.Categoria;
 import com.RODRIGO.RPX.exception.BusinessException;
 import com.RODRIGO.RPX.exception.ResourceInUseException;
 import com.RODRIGO.RPX.exception.ResourceNotFoundException;
+import com.RODRIGO.RPX.infrastructure.restclient.ProdutoRestClient;
 import com.RODRIGO.RPX.repository.CategoriaRepository;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,52 +24,68 @@ public class CategoriaService {
     private final ProdutoRestClient produtoRestClient;
 
     @Transactional(readOnly = true)
-    public List<Categoria> listarTodos() {
-        return categoriaRepository.findAll();
+    public List<CategoriaResponseDTO> listarTodos() {
+
+        return categoriaRepository.findAll()
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<Categoria> buscarPorNome(String nome) {
-        return categoriaRepository.findByNomeContainingIgnoreCase(nome);
+    public List<CategoriaResponseDTO> buscarPorNome(String nome) {
+
+        return categoriaRepository.findByNomeContainingIgnoreCase(nome)
+                .stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     @Transactional(readOnly = true)
-    public Categoria buscarPorId(Long id) {
-        return categoriaRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Categoria não encontrada com o ID: " + id
-                        )
-                );
+    public CategoriaResponseDTO buscarPorId(Long id) {
+
+        Categoria categoria = buscarEntidadePorId(id);
+
+        return toResponseDTO(categoria);
     }
 
     @Transactional
-    public Categoria salvar(Categoria categoria) {
+    public CategoriaResponseDTO salvar(CategoriaRequestDTO request) {
 
-        validarNomeDuplicado(categoria.getNome(), null);
+        validarNomeDuplicado(request.nome(), null);
 
-        return categoriaRepository.save(categoria);
+        Categoria categoria = new Categoria();
+        categoria.setNome(request.nome());
+
+        Categoria categoriaSalva = categoriaRepository.save(categoria);
+
+        return toResponseDTO(categoriaSalva);
     }
 
     @Transactional
-    public Categoria atualizar(Long id, Categoria categoriaAtualizada) {
+    public CategoriaResponseDTO atualizar(
+            Long id,
+            CategoriaRequestDTO request) {
 
-        Categoria categoriaExistente = buscarPorId(id);
+        Categoria categoriaExistente = buscarEntidadePorId(id);
 
         validarNomeDuplicado(
-                categoriaAtualizada.getNome(),
+                request.nome(),
                 id
         );
 
-        categoriaExistente.setNome(categoriaAtualizada.getNome());
+        categoriaExistente.setNome(request.nome());
 
-        return categoriaRepository.save(categoriaExistente);
+        Categoria categoriaAtualizada =
+                categoriaRepository.save(categoriaExistente);
+
+        return toResponseDTO(categoriaAtualizada);
     }
 
     @Transactional
     public void deletar(Long id) {
 
-        Categoria categoria = buscarPorId(id);
+        Categoria categoria = buscarEntidadePorId(id);
 
         if (produtoRestClient.existeProdutoPorCategoria(id)) {
 
@@ -79,6 +97,16 @@ public class CategoriaService {
         }
 
         categoriaRepository.delete(categoria);
+    }
+
+    private Categoria buscarEntidadePorId(Long id) {
+
+        return categoriaRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Categoria não encontrada com o ID: " + id
+                        )
+                );
     }
 
     private void validarNomeDuplicado(String nome, Long id) {
@@ -94,5 +122,13 @@ public class CategoriaService {
                         );
                     }
                 });
+    }
+
+    private CategoriaResponseDTO toResponseDTO(Categoria categoria) {
+
+        return new CategoriaResponseDTO(
+                categoria.getId(),
+                categoria.getNome()
+        );
     }
 }

@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.RODRIGO.RPX.entity.Categoria;
+import com.RODRIGO.RPX.dto.request.CategoriaRequestDTO;
+import com.RODRIGO.RPX.dto.response.CategoriaResponseDTO;
 import com.RODRIGO.RPX.services.CategoriaService;
 
 import jakarta.validation.Valid;
@@ -20,38 +21,40 @@ public class CategoriaController {
     private final CategoriaService categoriaService;
 
     @GetMapping
-    public ResponseEntity<List<Categoria>> listar() {
+    public ResponseEntity<List<CategoriaResponseDTO>> listar() {
 
-        List<Categoria> categorias = categoriaService.listarTodos();
+        List<CategoriaResponseDTO> categorias =
+                categoriaService.listarTodos();
 
         return ResponseEntity.ok(categorias);
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity<List<Categoria>> buscarPorNome(
+    public ResponseEntity<List<CategoriaResponseDTO>> buscarPorNome(
             @RequestParam String nome) {
 
-        List<Categoria> categorias =
+        List<CategoriaResponseDTO> categorias =
                 categoriaService.buscarPorNome(nome);
 
         return ResponseEntity.ok(categorias);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> buscarPorId(
+    public ResponseEntity<CategoriaResponseDTO> buscarPorId(
             @PathVariable Long id) {
 
-        Categoria categoria = categoriaService.buscarPorId(id);
+        CategoriaResponseDTO categoria =
+                categoriaService.buscarPorId(id);
 
         return ResponseEntity.ok(categoria);
     }
 
     @PostMapping
-    public ResponseEntity<Categoria> salvar(
-            @Valid @RequestBody Categoria categoria) {
+    public ResponseEntity<CategoriaResponseDTO> salvar(
+            @Valid @RequestBody CategoriaRequestDTO request) {
 
-        Categoria categoriaSalva =
-                categoriaService.salvar(categoria);
+        CategoriaResponseDTO categoriaSalva =
+                categoriaService.salvar(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -59,12 +62,12 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> atualizar(
+    public ResponseEntity<CategoriaResponseDTO> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody Categoria categoria) {
+            @Valid @RequestBody CategoriaRequestDTO request) {
 
-        Categoria categoriaAtualizada =
-                categoriaService.atualizar(id, categoria);
+        CategoriaResponseDTO categoriaAtualizada =
+                categoriaService.atualizar(id, request);
 
         return ResponseEntity.ok(categoriaAtualizada);
     }
