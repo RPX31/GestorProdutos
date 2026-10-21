@@ -1,3 +1,4 @@
+
 package com.RODRIGO.RPX.services;
 
 import java.util.List;
@@ -54,8 +55,8 @@ public class CategoriaService {
 
         validarNomeDuplicado(request.nome(), null);
 
-        Categoria categoria = new Categoria();
-        categoria.setNome(request.nome());
+        // ALTERAÇÃO: cria a entidade usando o construtor que recebe o DTO.
+        Categoria categoria = new Categoria(request);
 
         Categoria categoriaSalva = categoriaRepository.save(categoria);
 
@@ -65,7 +66,8 @@ public class CategoriaService {
     @Transactional
     public CategoriaResponseDTO atualizar(
             Long id,
-            CategoriaRequestDTO request) {
+            CategoriaRequestDTO request
+    ) {
 
         Categoria categoriaExistente = buscarEntidadePorId(id);
 
