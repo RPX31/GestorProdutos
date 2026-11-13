@@ -109,10 +109,10 @@ mvnw.cmd clean compile
 ./mvnw clean compile
 
 Repositórios dos Microsserviços
-GestorProdutos: GitHub - GestorProdutos
+GestorProdutos: GitHub -  https://github.com/RPX31/GestorProdutos
 
-Produto Service: GitHub - produto-service
+Produto Service: GitHub - https://github.com/RPX31/produto-service
 
-Marca Service: GitHub - marca-service
+Marca Service: GitHub - https://github.com/RPX31/marca-service
 
-Estoque Service: (Repositório dedicado em desenvolvimento / a ser adicionado em breve)
+Estoque Service: - https://github.com/RPX31/estoque-service
