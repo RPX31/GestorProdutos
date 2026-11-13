@@ -1,7 +1,10 @@
+
 package com.RODRIGO.RPX.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,41 +18,87 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleResourceNotFound(
             ResourceNotFoundException ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", HttpStatus.NOT_FOUND.value(),
-                        "error", "Not Found",
-                        "message", ex.getMessage()
-                ));
+        return resposta(
+                HttpStatus.NOT_FOUND,
+                "Not Found",
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(ResourceInUseException.class)
     public ResponseEntity<Map<String, Object>> handleResourceInUse(
             ResourceInUseException ex) {
 
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(Map.of(
-                        "timestamp", LocalDateTime.now(),
-                        "status", HttpStatus.CONFLICT.value(),
-                        "error", "Conflict",
-                        "message", ex.getMessage()
-                ));
+        return resposta(
+                HttpStatus.CONFLICT,
+                "Conflict",
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Map<String, Object>> handleBusinessException(
             BusinessException ex) {
 
+        return resposta(
+                HttpStatus.BAD_REQUEST,
+                "Bad Request",
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidation(
+            MethodArgumentNotValidException ex) {
+
+        String mensagem = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(erro -> erro.getDefaultMessage())
+                .findFirst()
+                .orElse("Dados informados são inválidos");
+
+        return resposta(
+                HttpStatus.BAD_REQUEST,
+                "Erro de validação",
+                mensagem
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidJson(
+            HttpMessageNotReadableException ex) {
+
+        return resposta(
+                HttpStatus.BAD_REQUEST,
+                "JSON inválido",
+                "O corpo da requisição está ausente ou contém dados inválidos."
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleUnexpectedException(
+            Exception ex) {
+
+        return resposta(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro interno",
+                "Ocorreu um erro interno. Tente novamente mais tarde."
+        );
+    }
+
+    private ResponseEntity<Map<String, Object>> resposta(
+            HttpStatus status,
+            String erro,
+            String mensagem) {
+
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(status)
                 .body(Map.of(
                         "timestamp", LocalDateTime.now(),
-                        "status", HttpStatus.BAD_REQUEST.value(),
-                        "error", "Bad Request",
-                        "message", ex.getMessage()
+                        "status", status.value(),
+                        "error", erro,
+                        "message", mensagem
                 ));
     }
 }
